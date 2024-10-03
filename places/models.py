@@ -1,4 +1,7 @@
 from django.db import models
+from django.utils.html import format_html
+from django.utils.safestring import mark_safe
+
 
 class Place(models.Model):
     title = models.CharField('Title', max_length=100)
@@ -16,3 +19,12 @@ class Image(models.Model):
     place = models.ForeignKey(
         'Place', verbose_name='Place', related_name='images', on_delete=models.CASCADE)
     position = models.PositiveIntegerField('Position', default=0)
+
+    @property
+    def image_preview(self):
+        if self.image:
+            return format_html(
+                mark_safe('<img src="{}" style="max-height:200px">'),
+                self.image.url,
+            )
+        return ""
