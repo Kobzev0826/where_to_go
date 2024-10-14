@@ -28,3 +28,6 @@ class Image(models.Model):
                 self.image.url,
             )
         return ""
+
+    class Meta(object):
+        ordering = ['position']
