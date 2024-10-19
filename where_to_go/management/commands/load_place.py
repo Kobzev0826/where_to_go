@@ -18,7 +18,6 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         json_url = kwargs['json_url']
         response = self.get_http(json_url)
-        breakpoint()
         place_raw = response.json()
         place, created = Place.objects.get_or_create(
             title=place_raw['title'],
