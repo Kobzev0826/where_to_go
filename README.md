@@ -2,7 +2,7 @@
 
 Этот проект показывает интересные места по миру с помощью яндекс афиши.
 
-[Работающий сайт](https://karmirotter.pythonanywhere.com/)
+[Пример работающего сайт](https://karmirotter.pythonanywhere.com/)
       
 ## Подготовка к запуску    
 Уставновить [Python 3+](https://www.python.org/downloads/)    
@@ -34,7 +34,8 @@ ALLOWED_HOSTS=webargs,konch,ped
 ```
 python3 manage.py runserver
 ```
-## Добавление мест с помощью кода
+## Добавление мест
+предусмотрен функционал по добавлению новых мест в формате geojson
 ```
 python3 manage.py load_place http://адрес/файла.json
 ```
