@@ -5,7 +5,7 @@
 [Пример работающего сайт](https://karmirotter.pythonanywhere.com/)
       
 ## Подготовка к запуску    
-Уставновить [Python 3+](https://www.python.org/downloads/)    
+Уставновить [Python 3.11](https://www.python.org/downloads/)    
 
 Установить, создать и активировать виртуальное окружение.
 ```
