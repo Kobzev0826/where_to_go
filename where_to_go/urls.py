@@ -15,13 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from where_to_go import views
+
+from places.views import show_place, show_start_page
 from django.conf.urls.static import static
 from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('place/<place_id>/', views.show_place, name='place'),
-    path('', views.show_start_page),
+    path('place/<place_id>/', show_place, name='place'),
+    path('', show_start_page),
     path('tinymce/', include('tinymce.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
