@@ -1,12 +1,11 @@
 from django.http import JsonResponse, HttpResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.template import loader
 
 from places.models import Place
 
 
 def show_start_page(request):
-    template = loader.get_template('index.html')
     places = []
     for place in Place.objects.all():
         places.append({
@@ -22,8 +21,7 @@ def show_start_page(request):
             }
         })
     context = {'title': 'Куда пойти', 'places': {'type': 'FeatureCollection', 'features': places}}
-    rendered_page = template.render(context, request)
-    return HttpResponse(rendered_page)
+    return HttpResponse(render(request,'index.html',context))
 
 
 def show_place(request, place_id):
