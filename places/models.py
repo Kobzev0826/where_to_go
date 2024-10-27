@@ -4,26 +4,32 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from tinymce.models import HTMLField
 
+
 class Place(models.Model):
-    title = models.CharField('Title', max_length=100)
-    short_description = models.TextField('Short description', blank=True)
-    detail_description =  HTMLField("Detailed description", blank=True)
-    lat = models.FloatField('Latitude')
-    lon = models.FloatField('Longitude')
+    title = models.CharField("Title", max_length=100)
+    short_description = models.TextField("Short description", blank=True)
+    detail_description = HTMLField("Detailed description", blank=True)
+    lat = models.FloatField("Latitude")
+    lon = models.FloatField("Longitude")
 
     def __str__(self):
         return self.title
 
     class Meta(object):
         constraints = [
-            UniqueConstraint(fields=['title','lat','lng'], name="uniq_place_params")
+            UniqueConstraint(fields=["title", "lat", "lng"], name="uniq_place_params"),
         ]
 
+
 class Image(models.Model):
-    image = models.ImageField('Image', upload_to='')
+    image = models.ImageField("Image", upload_to="")
     place = models.ForeignKey(
-        'Place', verbose_name='Place', related_name='images', on_delete=models.CASCADE)
-    position = models.PositiveIntegerField('Position', default=0, db_index=True)
+        "Place",
+        verbose_name="Place",
+        related_name="images",
+        on_delete=models.CASCADE,
+    )
+    position = models.PositiveIntegerField("Position", default=0, db_index=True)
 
     @property
     def image_preview(self):
@@ -35,4 +41,4 @@ class Image(models.Model):
         return ""
 
     class Meta(object):
-        ordering = ['position']
+        ordering = ["position"]

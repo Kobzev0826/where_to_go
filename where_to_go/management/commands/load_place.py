@@ -1,26 +1,38 @@
+import requests
 from django.core.exceptions import MultipleObjectsReturned
 from django.core.files.base import ContentFile
-import requests
 from django.core.management.base import BaseCommand
-from django.db import transaction, IntegrityError
-from requests import RequestException
-from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
-from places.models import Place, Image
+from django.db import IntegrityError, transaction
 from loguru import logger
+from requests.exceptions import RequestException, ConnectionError, Timeout
+from tenacity import (
+    retry,
+    retry_if_exception_type,
+    stop_after_attempt,
+    wait_exponential,
+)
+
+from places.models import Image, Place
 
 
 class Command(BaseCommand):
-    help = 'Add new place from json url'
+    help = "Add new place from json url"
 
     def add_arguments(self, parser):
-        parser.add_argument('json_url', type=str, help='Json url')
+        parser.add_argument("json_url", type=str, help="Json url")
 
     @retry(
         stop=stop_after_attempt(5),  # Максимум 5 попыток
-        wait=wait_exponential(multiplier=2, min=2, max=10),  # Экспоненциальная задержка от 2 до 10 секунд
-        retry=retry_if_exception_type((ConnectionError, Timeout))  # Повторять только при этих исключениях
+        wait=wait_exponential(
+            multiplier=2,
+            min=2,
+            max=10,
+        ),
+        retry=retry_if_exception_type(
+            (ConnectionError, Timeout),
+        ),
     )
-    def get_http(self,url):
+    def get_http(self, url):
         try:
             response = requests.get(url, timeout=10)
             response.raise_for_status()
@@ -29,11 +41,10 @@ class Command(BaseCommand):
             logger.error(f"HTTP error occurred: {e}")
             return None
 
-
         return response
 
     def handle(self, *args, **kwargs):
-        json_url = kwargs['json_url']
+        json_url = kwargs["json_url"]
         response = self.get_http(json_url)
         if not response:
             return
@@ -47,16 +58,18 @@ class Command(BaseCommand):
             with transaction.atomic():
                 try:
                     place, created = Place.objects.get_or_create(
-                        title=place_raw['title'],
+                        title=place_raw["title"],
                         defaults={
-                            "short_description": place_raw['description_short'],
-                            "detail_description": place_raw['description_long'],
-                            "lat": place_raw['coordinates']['lat'],
-                            "lon": place_raw['coordinates']['lng'],
+                            "short_description": place_raw["description_short"],
+                            "detail_description": place_raw["description_long"],
+                            "lat": place_raw["coordinates"]["lat"],
+                            "lon": place_raw["coordinates"]["lng"],
                         },
                     )
                 except MultipleObjectsReturned:
-                    logger.error("Error: Multiple places found with the same title and lat,lng.")
+                    logger.error(
+                        "Error: Multiple places found with the same title and lat,lng.",
+                    )
                     return
                 except IntegrityError:
                     logger.error("Database integrity error during place creation.")
@@ -65,7 +78,7 @@ class Command(BaseCommand):
                     logger.error(f"Missing key in JSON data: {e}")
                     return
 
-                for index, image_url in enumerate(place_raw.get('imgs', [])):
+                for index, image_url in enumerate(place_raw.get("imgs", [])):
                     image_response = self.get_http(image_url)
                     if not image_response:
                         logger.error(f"Failed to retrieve image at URL: {image_url}")
@@ -76,7 +89,9 @@ class Command(BaseCommand):
 
                         image_content = ContentFile(image_response.content)
                         image_obj.image.save(
-                            f'{place.pk}-{index}.jpg', image_content, save=True
+                            f"{place.pk}-{index}.jpg",
+                            image_content,
+                            save=True,
                         )
                     except IntegrityError:
                         logger.error("Database integrity error during image creation.")
