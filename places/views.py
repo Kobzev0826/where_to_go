@@ -1,7 +1,7 @@
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.template import loader
-
+from django.urls import reverse
 from places.models import Place
 
 
@@ -17,7 +17,7 @@ def show_start_page(request):
             'properties': {
                 'title': place.title,
                 'placeId': place.id,
-                'detailsUrl': f'place/{place.id}'
+                'detailsUrl': reverse('place-detail', args=[place.id]),
             }
         })
     context = {'title': 'Куда пойти', 'places': {'type': 'FeatureCollection', 'features': places}}
