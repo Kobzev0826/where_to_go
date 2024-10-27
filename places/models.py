@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import UniqueConstraint
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from tinymce.models import HTMLField
@@ -13,6 +14,10 @@ class Place(models.Model):
     def __str__(self):
         return self.title
 
+    class Meta(object):
+        constraints = [
+            UniqueConstraint(fields=['title','lat','lng'], name="uniq_place_params")
+        ]
 
 class Image(models.Model):
     image = models.ImageField('Image', upload_to='')
