@@ -85,13 +85,9 @@ class Command(BaseCommand):
                         continue
 
                     try:
-                        image_obj = Image.objects.create(place=place)
-
-                        image_content = ContentFile(image_response.content)
-                        image_obj.image.save(
-                            f"{place.pk}-{index}.jpg",
-                            image_content,
-                            save=True,
+                        Image.objects.create(
+                            place=place,
+                            image = ContentFile(image_response.content, name=f"{place.pk}-{index}.jpg")
                         )
                     except IntegrityError:
                         logger.error("Database integrity error during image creation.")
