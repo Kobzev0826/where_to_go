@@ -7,17 +7,20 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('places', '0003_image'),
+        ("places", "0003_image"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='image',
-            options={'ordering': ['position']},
+            name="image",
+            options={"ordering": ["position"]},
         ),
         migrations.AlterField(
-            model_name='place',
-            name='detail_description',
-            field=tinymce.models.HTMLField(blank=True, verbose_name='Detailed description'),
+            model_name="place",
+            name="detail_description",
+            field=tinymce.models.HTMLField(
+                blank=True,
+                verbose_name="Detailed description",
+            ),
         ),
     ]
