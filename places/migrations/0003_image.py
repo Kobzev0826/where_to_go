@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("places", "0002_add_initial_place"),
+        ("places", "0001_initial"),
     ]
 
     operations = [

@@ -17,7 +17,7 @@ class Place(models.Model):
 
     class Meta(object):
         constraints = [
-            UniqueConstraint(fields=["title", "lat", "lng"], name="uniq_place_params"),
+            UniqueConstraint(fields=["title", "lat", "lon"], name="uniq_place_params"),
         ]
 
 
