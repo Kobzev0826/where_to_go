@@ -32,10 +32,7 @@ def show_start_page(request):
 
 def show_place(request, place_id):
 
-    requested_place = Place.objects.prefetch_related("images").filter(id=place_id).first()
-
-    if not requested_place:
-        return JsonResponse({"error": "Place not found"}, status=404)
+    requested_place = get_object_or_404(Place.objects.prefetch_related("images"), id=place_id)
 
     images = [image.image.url for image in requested_place.images.all()]
 
